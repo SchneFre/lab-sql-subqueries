@@ -61,31 +61,14 @@ WHERE f.film_id IN (
 
 -- Retrieve the name and email of customers from Canada using both subqueries and joins. 
 -- To use joins, you will need to identify the relevant tables and their primary and foreign keys.
-SELECT 
-    c.first_name,
-    c.last_name,
-    c.email
-FROM
-	customer as c
-where c.store_id IN (
-	SELECT 
-		store_id
-	FROM 
-		address as a
-	join store
-	ON store.address_id = a.address_id
-	WHERE a.city_id in (
-		SELECT 
-			city_id
-		FROM city
-		WHERE country_id IN (
-			SELECT
-				country_id
-			FROM
-				country 
-			Where country = "Canada"
-		)
-	)
+SELECT first_name, last_name, email
+FROM customer
+WHERE address_id IN (
+  SELECT address_id FROM address WHERE city_id IN (
+    SELECT city_id FROM city WHERE country_id = (
+      SELECT country_id FROM country WHERE country = 'Canada'
+    )
+  )
 );
 -- Determine which films were starred by the most prolific actor in the Sakila database. 
 -- A prolific actor is defined as the actor who has acted in the most number of films. 
